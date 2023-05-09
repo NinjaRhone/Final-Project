@@ -6,7 +6,7 @@ class Barchart {
         this.config = {
             parentElement: _config.parentElement,
             colorScale: _config.colorScale,
-            containerWidth: _config.containerWidth || 500,
+            containerWidth: _config.containerWidth || 300,
             containerHeight: _config.containerHeight || 300,
             margin: _config.margin || {top: 25, right: 20, bottom: 20, left: 40},
         }
@@ -24,12 +24,10 @@ class Barchart {
         vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
 
-        // Initialize scales and axes
-
         // Initialize scales
         vis.colorScale = d3.scaleOrdinal()
-            .range(['red', 'blue', 'green', 'black', 'purple'])
-            .domain(['NorthernAfrica', 'MiddleAfrica', 'WesternAfrica', 'SouthernAfrica', 'CentralAsia']);
+            .range(['red', 'blue'])
+            .domain([0, 1]);
 
         // Important: we flip array elements in the y output range to position the rectangles correctly
         vis.yScale = d3.scaleLinear()
@@ -40,11 +38,11 @@ class Barchart {
             .paddingInner(0.2);
 
         vis.xAxis = d3.axisBottom(vis.xScale)
-            .ticks(['Northern Africa', 'Middle Africa', 'Western Africa', 'Southern Africa', 'Central Asia'])
+            .ticks(['Women', 'Men'])
             .tickSizeOuter(0);
 
         vis.yAxis = d3.axisLeft(vis.yScale)
-            .ticks(7)
+            .ticks(5)
             .tickSizeOuter(0)
 
         // Define size of SVG drawing area
@@ -71,7 +69,7 @@ class Barchart {
             .attr('x', 0)
             .attr('y', 5)
             .attr('dy', '.71em')
-            .text('Countries in Region');
+            .text('Number of patients by Sex');
     }
 
     /**
@@ -80,12 +78,11 @@ class Barchart {
     updateVis() {
         let vis = this;
 
-        // Prepare data: count number of trails in each difficulty category
-        // i.e. [{ key: 'easy', count: 10 }, {key: 'intermediate', ...
-        const aggregatedDataMap = d3.rollups(vis.data, v => v.length, d => d.region);
+        // Prepare data: count number of patients for each sex
+        const aggregatedDataMap = d3.rollups(vis.data, v => v.length, d => d.sex);
         vis.aggregatedData = Array.from(aggregatedDataMap, ([key, count]) => ({ key, count }));
 
-        const orderedKeys = ['Easy', 'Intermediate', 'Difficult'];
+        const orderedKeys = ['Women','Men'];
         vis.aggregatedData = vis.aggregatedData.sort((a,b) => {
             return orderedKeys.indexOf(a.key) - orderedKeys.indexOf(b.key);
         });
@@ -119,11 +116,11 @@ class Barchart {
             .attr('y', d => vis.yScale(vis.yValue(d)))
             .attr('fill', d => vis.colorScale(vis.colorValue(d)))
             .on('click', function(event, d) {
-                const isActive = regionFilter.includes(d.key);
+                const isActive = sexFilter.includes(d.key);
                 if (isActive) {
-                    regionFilter = regionFilter.filter(f => f !== d.key); // Remove filter
+                    sexFilter = sexFilter.filter(f => f !== d.key); // Remove filter
                 } else {
-                    regionFilter.push(d.key); // Append filter
+                    sexFilter.push(d.key); // Append filter
                 }
                 filterData(); // Call global function to update scatter plot
                 d3.select(this).classed('active', !isActive); // Add class to style active filters with CSS

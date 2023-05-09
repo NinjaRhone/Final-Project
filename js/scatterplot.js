@@ -9,8 +9,8 @@ class Scatterplot {
         this.config = {
             parentElement: _config.parentElement,
             colorScale: _config.colorScale,
-            containerWidth: _config.containerWidth || 500,
-            containerHeight: _config.containerHeight || 400,
+            containerWidth: _config.containerWidth || 600,
+            containerHeight: _config.containerHeight || 500,
             margin: _config.margin || {top: 20, right: 20, bottom: 40, left: 60},
             tooltipPadding: _config.tooltipPadding || 15
         }
@@ -35,14 +35,13 @@ class Scatterplot {
             .range([vis.height, 0]);
 
         vis.rScale = d3.scaleLinear()
-            .range([4, 12])
+            .range([4, 4])
 
         // Initialize axes
         vis.xAxis = d3.axisBottom(vis.xScale)
             .ticks(6)
             .tickSize(-vis.height - 10)
-            .tickPadding(10)
-            .tickFormat(d => d + ' km');
+            .tickPadding(10);
 
         vis.yAxis = d3.axisLeft(vis.yScale)
             .ticks(6)
@@ -71,18 +70,18 @@ class Scatterplot {
         // Append both axis titles
         vis.chart.append('text')
             .attr('class', 'axis-title')
-            .attr('y', vis.height + 30)
+            .attr('y', vis.height + 25)
             .attr('x', vis.width / 1.5)
             .attr('dy', '.71em')
             .style('text-anchor', 'end')
-            .text('Surface Area (km^2)');
+            .text('Age (years)');
 
         vis.svg.append('text')
             .attr('class', 'axis-title')
             .attr('x', 0)
             .attr('y', 5)
             .attr('dy', '.71em')
-            .text('Population in Thousands');
+            .text('Cholesterol (mg/dL)');
     }
 
     /**
@@ -92,15 +91,15 @@ class Scatterplot {
         let vis = this;
 
         // Specificy accessor functions
-        vis.colorValue = d => d.region;
-        vis.xValue = d => d.SurfaceArea;
-        vis.yValue = d => d.Population;
-        vis.rValue = d => d.PopDensity;
+        vis.colorValue = d => d.sex;
+        vis.xValue = d => d.age;
+        vis.yValue = d => d.chol;
+        vis.rValue = 4;
 
         // Set the scale input domains
-        vis.xScale.domain([0, d3.max(vis.data, vis.xValue)]);
+        vis.xScale.domain([d3.min(vis.data, vis.xValue), d3.max(vis.data, vis.xValue)]);
         vis.yScale.domain([0, d3.max(vis.data, vis.yValue)]);
-        vis.rScale.domain([0, d3.max(vis.data, vis.rValue)]);
+        vis.rScale.domain([0, 4]);
 
         vis.renderVis();
     }
@@ -113,10 +112,10 @@ class Scatterplot {
 
         // Add circles
         const circles = vis.chart.selectAll('.point')
-            .data(vis.data, d => d.country)
+            .data(vis.data)
             .join('circle')
             .attr('class', 'point')
-            .attr('r', d => vis.rScale(vis.rValue(d)))
+            .attr('r', d => vis.rScale(vis.rValue))
             .attr('cy', d => vis.yScale(vis.yValue(d)))
             .attr('cx', d => vis.xScale(vis.xValue(d)))
             .attr('fill', d => vis.config.colorScale(vis.colorValue(d)));
@@ -128,15 +127,7 @@ class Scatterplot {
                     .style('display', 'block')
                     .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
                     .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
-                    .html(`
-              <div class="tooltip-title">${d.country}</div>
-              <div><i>${d.region}</i></div>
-              <ul>
-                <li>${d.SurfaceArea} km^2, ~${d.Population} thousand</li>
-                <li>${d.region}</li>
-                <li>${d.SexRatio} M to F</li>
-              </ul>
-            `);
+
             })
             .on('mouseleave', () => {
                 d3.select('#tooltip').style('display', 'none');

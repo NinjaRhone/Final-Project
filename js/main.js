@@ -1,25 +1,22 @@
 // Global objects
 let data, scatterplot, barchart;
-let regionFilter = [];
+let sexFilter = [];
 
 
 /**
  * Load data from CSV file asynchronously and render charts
  */
-d3.csv('data/africa.csv')
+d3.csv('data/Heart_disease_statlog.csv')
     .then(_data => {
         data = _data;
         data.forEach(d => {
-            d.SurfaceArea = +d.SurfaceArea;
-            d.Population = +d.Population;
-            d.PopDensity = +d.PopDensity;
-            d.SexRatio = +d.SexRatio;
+
         });
 
         // Initialize scales
         const colorScale = d3.scaleOrdinal()
-            .range(['red', 'blue', 'green', 'black', 'purple'])
-            .domain(['NorthernAfrica', 'MiddleAfrica', 'WesternAfrica', 'SouthernAfrica', 'CentralAsia']);
+            .range(['red', 'blue'])
+            .domain([0, 1]);
 
         scatterplot = new Scatterplot({
             parentElement: '#scatterplot',
@@ -41,10 +38,10 @@ d3.csv('data/africa.csv')
  * Use bar chart as filter and update scatter plot accordingly
  */
 function filterData() {
-    if (regionFilter.length == 0) {
+    if (sexFilter.length == 0) {
         scatterplot.data = data;
     } else {
-        scatterplot.data = data.filter(d => regionFilter.includes(d.region));
+        scatterplot.data = data.filter(d => sexFilter.includes(d.sex));
     }
     scatterplot.updateVis();
 }
