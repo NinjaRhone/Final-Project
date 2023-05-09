@@ -98,7 +98,7 @@ class Scatterplot {
 
         // Set the scale input domains
         vis.xScale.domain([d3.min(vis.data, vis.xValue), d3.max(vis.data, vis.xValue)]);
-        vis.yScale.domain([0, d3.max(vis.data, vis.yValue)]);
+        vis.yScale.domain([d3.min(vis.data, vis.yValue), d3.max(vis.data, vis.yValue)]);
         vis.rScale.domain([0, 4]);
 
         vis.renderVis();
