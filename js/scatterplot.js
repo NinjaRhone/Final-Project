@@ -66,34 +66,19 @@ class Scatterplot {
         // Append y-axis group
         vis.yAxisG = vis.chart.append('g')
             .attr('class', 'axis y-axis');
-
-        // Append both axis titles
-        vis.chart.append('text')
-            .attr('class', 'axis-title')
-            .attr('y', vis.height + 25)
-            .attr('x', vis.width / 1.5)
-            .attr('dy', '.71em')
-            .style('text-anchor', 'end')
-            .text('Age (years)');
-
-        vis.svg.append('text')
-            .attr('class', 'axis-title')
-            .attr('x', 0)
-            .attr('y', 5)
-            .attr('dy', '.71em')
-            .text('Cholesterol (mg/dL)');
     }
 
     /**
      * Prepare the data and scales before we render it.
      */
-    updateVis() {
+    updateVis(selectedValue = 'cp') {
         let vis = this;
+
 
         // Specificy accessor functions
         vis.colorValue = d => d.sex;
         vis.xValue = d => d.age;
-        vis.yValue = d => d.chol;
+        vis.yValue = d => d[selectedValue];
         vis.rValue = 4;
 
         // Set the scale input domains
@@ -120,18 +105,6 @@ class Scatterplot {
             .attr('cx', d => vis.xScale(vis.xValue(d)))
             .attr('fill', d => vis.config.colorScale(vis.colorValue(d)));
 
-        // Tooltip event listeners
-        circles
-            .on('mouseover', (event,d) => {
-                d3.select('#tooltip')
-                    .style('display', 'block')
-                    .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
-                    .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
-
-            })
-            .on('mouseleave', () => {
-                d3.select('#tooltip').style('display', 'none');
-            });
 
         // Update the axes/gridlines
         // We use the second .call() to remove the axis and just show gridlines

@@ -38,11 +38,11 @@ class Barchart {
             .paddingInner(0.2);
 
         vis.xAxis = d3.axisBottom(vis.xScale)
-            .ticks(['Women', 'Men'])
-            .tickSizeOuter(0);
+            .ticks(2)
+            .tickSizeOuter(0)
 
         vis.yAxis = d3.axisLeft(vis.yScale)
-            .ticks(5)
+            .ticks(4)
             .tickSizeOuter(0)
 
         // Define size of SVG drawing area
@@ -82,7 +82,7 @@ class Barchart {
         const aggregatedDataMap = d3.rollups(vis.data, v => v.length, d => d.sex);
         vis.aggregatedData = Array.from(aggregatedDataMap, ([key, count]) => ({ key, count }));
 
-        const orderedKeys = ['Women','Men'];
+        const orderedKeys = [0,1];
         vis.aggregatedData = vis.aggregatedData.sort((a,b) => {
             return orderedKeys.indexOf(a.key) - orderedKeys.indexOf(b.key);
         });
