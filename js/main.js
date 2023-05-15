@@ -14,7 +14,7 @@ d3.csv('data/Heart_disease_statlog.csv')
         });
 
         // List of groups (here I have one group per column)
-        var allGroup = ["cp", "trestbps", "chol", "thalach", "oldpeak"]
+        var allGroup = ["cp", "trestbps", "chol", "thal", "oldpeak", "ca"]
 
         // add the options to the button
         d3.select("#selectButton1")
