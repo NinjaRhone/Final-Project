@@ -1,4 +1,4 @@
-# Project-Proposal
+# Proposal and data description
 
 Heart Disease by age, sex and other correlating factors
 
