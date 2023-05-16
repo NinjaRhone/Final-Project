@@ -1,10 +1,6 @@
 class Scatterplot {
 
-    /**
-     * Class constructor with basic chart configuration
-     * @param {Object}
-     * @param {Array}
-     */
+    // Constructor for scatterplot takes configurations as well as the data being used.
     constructor(_config, _data) {
         this.config = {
             parentElement: _config.parentElement,
@@ -18,9 +14,7 @@ class Scatterplot {
         this.initVis();
     }
 
-    /**
-     * We initialize scales/axes and append static elements, such as axis titles.
-     */
+    // initializing margins and size for vizualization based on data.
     initVis() {
         let vis = this;
 
@@ -28,6 +22,7 @@ class Scatterplot {
         vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
 
+        //Set up Scales for axes and circles
         vis.xScale = d3.scaleLinear()
             .range([0, vis.width]);
 
@@ -68,9 +63,7 @@ class Scatterplot {
             .attr('class', 'axis y-axis');
     }
 
-    /**
-     * Prepare the data and scales before we render it.
-     */
+    // updates and populates the scatterplot graph
     updateVis(selectedValue = 'cp') {
         let vis = this;
 
@@ -89,9 +82,7 @@ class Scatterplot {
         vis.renderVis();
     }
 
-    /**
-     * Bind data to visual elements.
-     */
+    // visually renders the graph on the webpage.
     renderVis() {
         let vis = this;
 

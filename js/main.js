@@ -14,7 +14,7 @@ d3.csv('data/Heart_disease_statlog.csv')
         });
 
         // List of groups (here I have one group per column)
-        var allGroup = ["cp", "trestbps", "chol", "thal", "oldpeak", "ca"]
+        var allGroup = ["cp", "chol", "thal", "oldpeak", "ca"]
 
         // add the options to the button
         d3.select("#selectButton1")
@@ -26,17 +26,19 @@ d3.csv('data/Heart_disease_statlog.csv')
             .attr("value", function (d) { return d; }) // corresponding value returned by the button
 
 
-        // Initialize scales
+        // Initialize color scales for female then male.
         const colorScale = d3.scaleOrdinal()
             .range(['red', 'blue'])
             .domain([0, 1]);
 
+        // Creates the scatterplot
         scatterplot = new Scatterplot({
             parentElement: '#scatterplot',
             colorScale: colorScale
         }, data);
         scatterplot.updateVis();
 
+        // Creates Barchart
         barchart = new Barchart({
             parentElement: '#barchart',
             colorScale: colorScale
@@ -48,9 +50,7 @@ d3.csv('data/Heart_disease_statlog.csv')
     .catch(error => console.error(error));
 
 
-/**
- * Use bar chart as filter and update scatter plot accordingly
- */
+// Filter to let barchart filter scatterplot by sex.
 function filterData() {
     if (sexFilter.length == 0) {
         scatterplot.data = data;
